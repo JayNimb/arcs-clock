@@ -125,11 +125,37 @@ html,body { height:100%; width:100%; background:var(--bg); color:var(--parchment
 .ov-btn.primary { border-color:var(--gold); color:var(--gold); background:var(--gold-dim); }
 
 /* TOAST */
-#toast { position:fixed; bottom:72px; left:50%; transform:translateX(-50%); background:rgba(30,24,16,.95); border:1px solid var(--gold-line); border-radius:20px; padding:.5rem 1.2rem; font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.12em; color:var(--parchment); opacity:0; pointer-events:none; transition:opacity .3s; z-index:90; white-space:nowrap; }
+#toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(30,24,16,.95); border:1px solid var(--gold-line); border-radius:20px; padding:.5rem 1.2rem; font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.12em; color:var(--parchment); opacity:0; pointer-events:none; transition:opacity .3s; z-index:90; white-space:nowrap; }
 #toast.show { opacity:1; }
 .conn-dot { width:6px; height:6px; border-radius:50%; background:var(--ash); flex-shrink:0; transition:background .5s; }
 .conn-dot.on { background:#7a9e4a; }
 .conn-dot.warn { background:var(--ember); }
+
+/* VP on tile */
+.tile-vp { position:absolute; top:.55rem; right:.7rem; font-family:'Cinzel',serif; font-size:clamp(.65rem,2vw,.85rem); color:var(--ash2); letter-spacing:.06em; transition:color .3s; display:flex; align-items:center; gap:.3em; }
+.tile.active .tile-vp { color:var(--pc); }
+.tile-vp-num { font-weight:700; font-size:clamp(.8rem,2.5vw,1.1rem); }
+
+/* VP PANEL */
+#vp-panel {
+  position:fixed; inset:0; z-index:70;
+  display:flex; flex-direction:column;
+  background:rgba(9,8,6,.97);
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  padding:1.5rem 1.2rem 2rem;
+}
+#vp-panel.open { transform:translateY(0); }
+#vp-panel h3 { font-family:'Cinzel',serif; font-size:.8rem; letter-spacing:.22em; color:var(--gold); text-align:center; margin-bottom:1.2rem; }
+#vp-rows { display:flex; flex-direction:column; gap:.7rem; flex:1; justify-content:center; }
+.vp-row { display:flex; align-items:center; gap:.8rem; padding:.8rem 1rem; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:8px; }
+.vp-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.vp-name { flex:1; font-family:'Cinzel',serif; font-size:.85rem; letter-spacing:.08em; color:var(--parchment); }
+.vp-controls { display:flex; align-items:center; gap:.5rem; }
+.vp-btn { width:38px; height:38px; border-radius:50%; border:1px solid rgba(255,255,255,.12); background:transparent; color:var(--parchment); font-size:1.3rem; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; transition:all .15s; }
+.vp-btn:active { transform:scale(.9); background:rgba(255,255,255,.08); }
+.vp-score { font-family:'Cinzel',serif; font-size:1.4rem; font-weight:700; color:var(--gold); min-width:2.5rem; text-align:center; }
+.vp-close { margin-top:1.2rem; width:100%; padding:.9rem; background:transparent; border:1px solid var(--gold-line); border-radius:6px; color:var(--gold); font-family:'Cinzel',serif; font-size:.8rem; letter-spacing:.15em; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -216,8 +242,16 @@ html,body { height:100%; width:100%; background:var(--bg); color:var(--parchment
     <button class="b-btn" onclick="showResetOverlay()">↺ Ny</button>
     <button id="pause-btn" class="b-btn" onclick="doPause()">⏸ PAUSE</button>
     <div class="bar-center" id="bar-center"></div>
+    <button class="b-btn" onclick="openVP()">VP ★</button>
     <div class="conn-dot" id="conn-dot"></div>
   </div>
+</div>
+
+<!-- VP PANEL -->
+<div id="vp-panel">
+  <h3>VICTORY POINTS</h3>
+  <div id="vp-rows"></div>
+  <button class="vp-close" onclick="closeVP()">LUK</button>
 </div>
 
 <div id="pause-banner">PAUSE</div>
@@ -251,7 +285,8 @@ let me  = { code:null, idx:-1, isHost:false };
 let gameRef=null, gameListener=null;
 let localTimers=[], tickInterval=null, lastTickMs=null;
 let gs=null, prevActive=-2;
-let gameMode=''; // 'local' or 'network'
+let gameMode='';
+let vp=[]; // victory points per player
 
 // ── Helpers ──────────────────────────────────────────────
 function fmt(s){
@@ -336,7 +371,7 @@ function startLocal(){
     timers:Array(cfg.cnt).fill(cfg.secs),
     active:-1, paused:false, phase:'playing'
   };
-  me={code:null,idx:-1,isHost:true};
+  vp = Array(cfg.cnt).fill(0);
   localTimers=[...gs.timers];
   prevActive=-2;
   $('conn-dot').style.display='none';
@@ -353,6 +388,7 @@ async function hostGame(){
   for(let i=0;i<cfg.cnt;i++){
     const v=$(`n-${i}`)?.value.trim();names.push(v||DEF_NAMES[i]);
   }
+  vp = Array(cfg.cnt).fill(0);
   const code=randCode();
   me={code,idx:0,isHost:true};
   gameRef=db.ref(`games/${code}`);
@@ -381,6 +417,7 @@ async function joinGame(){
   for(let i=0;i<data.cnt;i++){if(!taken.includes(i)){idx=i;break;}}
   if(idx<0){toast('Spillet er fuldt');return;}
   me={code,idx,isHost:false};
+  vp = Array(data.cnt).fill(0);
   await db.ref(`games/${code}/players`).update({[idx]:{name:data.names[idx],joined:true}});
   $('lobby-code').textContent=code;
   showScreen('s-lobby');
@@ -393,6 +430,8 @@ function listenGame(){
   gameListener=gameRef.on('value',snap=>{
     if(!snap.exists())return;
     gs=snap.val();connDot('on');
+    // Sync VP from Firebase
+    if(gs.vp) vp=[...gs.vp];
     if(gs.phase==='lobby') renderLobby(gs);
     else if(gs.phase==='playing') renderClock(gs);
   },()=>connDot('warn'));
@@ -459,6 +498,7 @@ function buildTiles(state){
     t.onclick=()=>onTileClick(i);
     t.innerHTML=`
       <div class="my-ring"></div>
+      <div class="tile-vp" id="tvp-${i}"><span class="tile-vp-num" id="tvpn-${i}">0</span> VP</div>
       <div class="tile-name">${state.names[i]}</div>
       <div class="tile-time" id="tt-${i}">${fmt(state.timers[i])}</div>
       <div class="tile-sub"  id="ts-${i}"></div>`;
@@ -476,6 +516,7 @@ function updateTileUI(i,state){
   tile.className='tile'+(isActive?' active':'')+(isExpired?' expired':'')
     +(isWarning&&!isExpired?' warning':'')+(isMe?' is-me':'');
   $(`tt-${i}`).textContent=fmt(t);
+  const vpEl=$(`tvpn-${i}`); if(vpEl) vpEl.textContent=vp[i]||0;
   const sub=$(`ts-${i}`);
   if(isExpired)             sub.textContent='tid udløbet';
   else if(isActive)         sub.textContent='aktiv — tryk for at afslutte tur';
@@ -570,6 +611,7 @@ function showResetOverlay(){
 async function restartSame(){
   if(!gs)return;
   const newTimers=Array(gs.cnt).fill(gs.secs);
+  vp=Array(gs.cnt).fill(0);
   prevActive=-2;
   if(gameMode==='local'){
     gs.timers=newTimers;gs.active=-1;gs.paused=false;gs.phase='playing';
@@ -579,6 +621,39 @@ async function restartSame(){
     if(!gameRef)return;
     await gameRef.update({timers:newTimers,active:-1,paused:false,phase:'playing'});
     buildTiles({...gs,timers:newTimers});
+  }
+}
+
+// ── VP ────────────────────────────────────────────────────
+function openVP(){
+  if(!gs) return;
+  const rows=$('vp-rows'); rows.innerHTML='';
+  for(let i=0;i<gs.cnt;i++){
+    const row=document.createElement('div'); row.className='vp-row';
+    row.innerHTML=`
+      <div class="vp-dot" style="background:${COLORS[i]}"></div>
+      <div class="vp-name">${gs.names[i]}</div>
+      <div class="vp-controls">
+        <button class="vp-btn" onclick="changeVP(${i},-1)">−</button>
+        <div class="vp-score" id="vps-${i}">${vp[i]||0}</div>
+        <button class="vp-btn" onclick="changeVP(${i},1)">+</button>
+      </div>`;
+    rows.appendChild(row);
+  }
+  $('vp-panel').classList.add('open');
+}
+function closeVP(){
+  $('vp-panel').classList.remove('open');
+}
+function changeVP(i, delta){
+  vp[i]=Math.max(0,(vp[i]||0)+delta);
+  // Update panel score
+  const el=$(`vps-${i}`); if(el) el.textContent=vp[i];
+  // Update tile VP display
+  const tEl=$(`tvpn-${i}`); if(tEl) tEl.textContent=vp[i];
+  // Sync to Firebase if network mode
+  if(gameMode==='network' && gameRef){
+    gameRef.update({vp:[...vp]});
   }
 }
 
