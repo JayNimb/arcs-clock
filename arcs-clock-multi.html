@@ -20,6 +20,17 @@ html,body { height:100%; width:100%; background:var(--bg); color:var(--parchment
 .screen { display:none; height:100%; width:100%; flex-direction:column; }
 .screen.active { display:flex; }
 
+/* MODE SELECT */
+#s-mode { align-items:center; justify-content:center; gap:1.8rem; padding:2rem; background:radial-gradient(ellipse at 50% 30%,#1c140a 0%,var(--bg) 70%); }
+#s-mode .logo { margin-bottom:.5rem; }
+.mode-cards { display:flex; flex-direction:column; gap:1rem; width:100%; max-width:380px; }
+.mode-card { padding:1.6rem 1.4rem; background:rgba(255,255,255,.03); border:1px solid var(--gold-line); border-radius:10px; cursor:pointer; transition:all .2s; -webkit-tap-highlight-color:transparent; text-align:left; width:100%; }
+.mode-card:active { transform:scale(.98); }
+.mode-card:hover { background:rgba(255,255,255,.05); border-color:var(--gold); }
+.mode-card-title { font-family:'Cinzel',serif; font-size:1rem; font-weight:700; letter-spacing:.12em; color:var(--gold); margin-bottom:.4rem; }
+.mode-card-desc { font-style:italic; color:var(--ash2); font-size:.9rem; line-height:1.5; }
+.mode-icon { font-size:1.6rem; margin-bottom:.6rem; }
+
 /* SETUP */
 #s-setup { align-items:center; justify-content:flex-start; overflow-y:auto; padding:2.5rem 1.5rem 3rem; background:radial-gradient(ellipse at 50% 0%,#1c140a 0%,var(--bg) 65%); }
 .logo { text-align:center; margin-bottom:2.5rem; }
@@ -51,10 +62,12 @@ html,body { height:100%; width:100%; background:var(--bg); color:var(--parchment
 #s-join { align-items:center; justify-content:center; padding:2rem; gap:1.2rem; background:radial-gradient(ellipse at 50% 30%,#1c140a,var(--bg) 70%); }
 #s-join h2 { font-family:'Cinzel',serif; font-size:clamp(1.4rem,6vw,2rem); color:var(--gold); letter-spacing:.12em; }
 .join-desc { color:var(--ash2); font-style:italic; font-size:1rem; text-align:center; max-width:280px; }
-.join-input-row { display:flex; gap:.6rem; width:100%; max-width:340px; }
-.join-input { flex:1; background:rgba(255,255,255,.05); border:1px solid var(--gold-line); border-radius:5px; color:var(--parchment); font-family:'Cinzel',serif; font-size:1.8rem; font-weight:700; letter-spacing:.3em; padding:.7rem 1rem; outline:none; text-align:center; text-transform:uppercase; }
+.join-input-row { display:flex; width:100%; max-width:340px; }
+.join-input { flex:1; background:rgba(255,255,255,.05); border:1px solid var(--gold-line); border-radius:5px; color:var(--parchment); font-family:'Cinzel',serif; font-size:1.8rem; font-weight:700; letter-spacing:.3em; padding:.7rem 1rem; outline:none; text-align:center; text-transform:uppercase; width:100%; }
 .join-input:focus { border-color:var(--gold); }
-.join-btn { padding:.8rem 1.4rem; background:var(--gold); color:var(--bg); border:none; border-radius:5px; font-family:'Cinzel',serif; font-size:.85rem; font-weight:700; cursor:pointer; }
+.join-action-row { display:flex; gap:.6rem; width:100%; max-width:340px; }
+.join-btn { flex:1; padding:.9rem; background:var(--gold); color:var(--bg); border:none; border-radius:5px; font-family:'Cinzel',serif; font-size:.85rem; font-weight:700; letter-spacing:.12em; cursor:pointer; }
+.join-back-btn { padding:.9rem 1rem; background:transparent; border:1px solid rgba(255,255,255,.1); border-radius:5px; color:var(--ash2); font-family:'Cinzel',serif; font-size:.75rem; letter-spacing:.1em; cursor:pointer; white-space:nowrap; }
 .divider { display:flex; align-items:center; gap:1rem; width:100%; max-width:340px; color:var(--ash); font-size:.8rem; letter-spacing:.1em; }
 .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--gold-line); }
 
@@ -94,10 +107,10 @@ html,body { height:100%; width:100%; background:var(--bg); color:var(--parchment
 .tile.is-me.active .my-ring { opacity:.35; }
 
 /* BAR */
-#bar { display:flex; align-items:center; justify-content:space-between; padding:.55rem 1rem; border-top:1px solid var(--gold-line); background:rgba(9,8,6,.95); flex-shrink:0; gap:.5rem; min-height:52px; }
+#bar { display:flex; align-items:center; justify-content:space-between; padding:.5rem .8rem; border-top:1px solid var(--gold-line); background:rgba(9,8,6,.95); flex-shrink:0; gap:.5rem; min-height:68px; }
 .b-btn { background:transparent; border:1px solid rgba(255,255,255,.1); border-radius:5px; color:var(--ash2); font-family:'Cinzel',serif; font-size:.62rem; letter-spacing:.12em; padding:.5rem .75rem; cursor:pointer; white-space:nowrap; -webkit-tap-highlight-color:transparent; }
-#pause-btn { padding:.6rem 1.4rem; font-size:.68rem; border-color:var(--gold-line); color:var(--gold); }
-#pause-btn.paused { background:var(--gold-dim); }
+#pause-btn { padding:.85rem 2rem; font-size:.8rem; letter-spacing:.16em; border-color:var(--gold); color:var(--gold); border-width:1.5px; font-weight:700; box-shadow:0 0 16px rgba(201,168,76,.1); }
+#pause-btn.paused { background:var(--gold-dim); box-shadow:0 0 20px rgba(201,168,76,.2); }
 .bar-center { flex:1; text-align:center; font-family:'Cinzel',serif; font-size:.62rem; letter-spacing:.14em; color:var(--ash); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 #pause-banner { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Cinzel',serif; font-size:clamp(1.2rem,5vw,2rem); letter-spacing:.35em; color:var(--gold); opacity:.45; pointer-events:none; z-index:40; }
 #pause-banner.show { display:block; }
@@ -121,9 +134,26 @@ html,body { height:100%; width:100%; background:var(--bg); color:var(--parchment
 </head>
 <body>
 
-<!-- SETUP -->
-<div id="s-setup" class="screen active">
-  <div class="logo"><h1>ARCS</h1><p>Tur-ur · Multiplayer</p></div>
+<!-- MODE SELECT -->
+<div id="s-mode" class="screen active">
+  <div class="logo"><h1>ARCS</h1><p>Tur-ur</p></div>
+  <div class="mode-cards">
+    <button class="mode-card" onclick="goLocal()">
+      <div class="mode-icon">📱</div>
+      <div class="mode-card-title">ÉN TELEFON</div>
+      <div class="mode-card-desc">Alle spillere deler én skærm. Ingen internet nødvendigt.</div>
+    </button>
+    <button class="mode-card" onclick="goNetwork()">
+      <div class="mode-icon">📡</div>
+      <div class="mode-card-title">NETVÆRK</div>
+      <div class="mode-card-desc">Hver spiller har sin egen telefon. Synkroniseret via internet.</div>
+    </button>
+  </div>
+</div>
+
+<!-- SETUP (bruges af begge modes) -->
+<div id="s-setup" class="screen">
+  <div class="logo"><h1>ARCS</h1><p id="setup-subtitle">Tur-ur</p></div>
   <div class="card">
     <div class="card-label">Antal spillere</div>
     <div class="row-btns" id="cnt-btns">
@@ -151,8 +181,7 @@ html,body { height:100%; width:100%; background:var(--bg); color:var(--parchment
     <div class="card-label">Spillernavne</div>
     <div class="name-list" id="name-list"></div>
   </div>
-  <button class="main-btn primary" onclick="hostGame()">OPRET SPIL</button>
-  <button class="main-btn secondary" onclick="showJoin()">DELTAG I SPIL</button>
+  <div id="setup-btns"></div>
   <div style="height:2rem"></div>
 </div>
 
@@ -162,10 +191,11 @@ html,body { height:100%; width:100%; background:var(--bg); color:var(--parchment
   <p class="join-desc">Indtast den 4-bogstavs kode fra host-telefonen</p>
   <div class="join-input-row">
     <input class="join-input" id="join-code-input" maxlength="4" placeholder="KODE" autocomplete="off" autocorrect="off" spellcheck="false">
-    <button class="join-btn" onclick="joinGame()">→</button>
   </div>
-  <div class="divider">eller</div>
-  <button class="opt-btn" style="max-width:340px;width:100%;padding:.9rem" onclick="showSetup()">← Tilbage</button>
+  <div class="join-action-row">
+    <button class="join-back-btn" onclick="showSetup()">← Tilbage</button>
+    <button class="join-btn" onclick="joinGame()">DELTAG →</button>
+  </div>
 </div>
 
 <!-- LOBBY -->
@@ -221,6 +251,7 @@ let me  = { code:null, idx:-1, isHost:false };
 let gameRef=null, gameListener=null;
 let localTimers=[], tickInterval=null, lastTickMs=null;
 let gs=null, prevActive=-2;
+let gameMode=''; // 'local' or 'network'
 
 // ── Helpers ──────────────────────────────────────────────
 function fmt(s){
@@ -242,6 +273,25 @@ function showScreen(id){
 function connDot(s){
   $('conn-dot').classList.toggle('on',s==='on');
   $('conn-dot').classList.toggle('warn',s==='warn');
+}
+
+// ── Mode select ───────────────────────────────────────────
+function goLocal(){
+  gameMode='local';
+  $('setup-subtitle').textContent='Tur-ur · Én telefon';
+  $('setup-btns').innerHTML=`
+    <button class="main-btn primary" onclick="startLocal()">START SPIL</button>
+    <button class="main-btn secondary" onclick="showScreen('s-mode')">← Tilbage</button>`;
+  showScreen('s-setup');
+}
+function goNetwork(){
+  gameMode='network';
+  $('setup-subtitle').textContent='Tur-ur · Netværk';
+  $('setup-btns').innerHTML=`
+    <button class="main-btn primary" onclick="hostGame()">OPRET SPIL</button>
+    <button class="main-btn secondary" onclick="showJoin()">DELTAG I SPIL</button>
+    <button class="main-btn secondary" style="font-size:.7rem;padding:.7rem;margin-top:.2rem;color:var(--ash)" onclick="showScreen('s-mode')">← Tilbage</button>`;
+  showScreen('s-setup');
 }
 
 // ── Setup ────────────────────────────────────────────────
@@ -270,9 +320,32 @@ function renderNameInputs(){
     row.appendChild(dot);row.appendChild(inp);list.appendChild(row);
   }
 }
-function showSetup(){stopListening();showScreen('s-setup');}
+function showSetup(){stopListening();showScreen('s-mode');}
 function showJoin(){showScreen('s-join');}
 setCnt(3);setTime(20);
+
+// ── Local game ────────────────────────────────────────────
+function startLocal(){
+  const names=[];
+  for(let i=0;i<cfg.cnt;i++){
+    const v=$(`n-${i}`)?.value.trim();names.push(v||DEF_NAMES[i]);
+  }
+  // Build a local gs object (same shape as Firebase state)
+  gs={
+    cnt:cfg.cnt, secs:cfg.secs, names,
+    timers:Array(cfg.cnt).fill(cfg.secs),
+    active:-1, paused:false, phase:'playing'
+  };
+  me={code:null,idx:-1,isHost:true};
+  localTimers=[...gs.timers];
+  prevActive=-2;
+  $('conn-dot').style.display='none';
+  buildTiles(gs);
+  showScreen('s-clock');
+  updateAllTileUI(gs);
+  $('bar-center').textContent='VÆLG SPILLER';
+  $('pause-btn').textContent='⏸ PAUSE';
+}
 
 // ── Host ─────────────────────────────────────────────────
 async function hostGame(){
@@ -353,7 +426,7 @@ async function launchGame(){
   if(!me.isHost||!gameRef)return;
   await gameRef.update({phase:'playing',active:-1,paused:false});
 }
-function leaveGame(){stopListening();showScreen('s-setup');}
+function leaveGame(){stopListening();showScreen('s-mode');}
 
 // ── Clock ────────────────────────────────────────────────
 function renderClock(state){
@@ -367,6 +440,9 @@ function renderClock(state){
     }
   }
   prevActive=state.active;
+  // Show/hide conn dot based on mode
+  $('conn-dot').style.display = gameMode==='network' ? 'block' : 'none';
+
   $('pause-banner').classList.toggle('show',state.paused);
   $('pause-btn').classList.toggle('paused',state.paused);
   $('pause-btn').textContent=state.paused?'▶ FORTSÆT':'⏸ PAUSE';
@@ -402,10 +478,9 @@ function updateTileUI(i,state){
   $(`tt-${i}`).textContent=fmt(t);
   const sub=$(`ts-${i}`);
   if(isExpired)             sub.textContent='tid udløbet';
-  else if(isActive&&isMe)   sub.textContent='din tur — tryk for at afslutte';
-  else if(isActive)         sub.textContent=state.names[i]+'s tur';
-  else if(state?.active<0)  sub.textContent=isMe?'tryk for at starte din tur':'';
-  else                      sub.textContent=isMe?'tryk for at overtage turen':'';
+  else if(isActive)         sub.textContent='aktiv — tryk for at afslutte tur';
+  else if(state?.active<0)  sub.textContent='tryk for at starte';
+  else                      sub.textContent= gameMode==='local' ? 'tryk for at skifte til denne' : (isMe?'tryk for at overtage turen':'');
 }
 
 // ── Tick ─────────────────────────────────────────────────
@@ -423,18 +498,26 @@ function startTick(idx){
 }
 function stopTick(){clearInterval(tickInterval);tickInterval=null;}
 async function expirePlayer(idx){
-  if(!gameRef||!gs)return;
+  if(!gs)return;
   let next=(idx+1)%gs.cnt,tries=0;
   while(localTimers[next]<=0&&tries<gs.cnt){next=(next+1)%gs.cnt;tries++;}
   const newTimers=[...localTimers];newTimers[idx]=0;
   if(tries>=gs.cnt){
-    await gameRef.update({timers:newTimers,active:-1,phase:'done'});
+    if(gameMode==='local'){
+      gs.timers=newTimers;gs.active=-1;gs.phase='done';
+    } else {
+      await gameRef.update({timers:newTimers,active:-1,phase:'done'});
+    }
     showOv('Spillet er slut','Alle spilleres tid er brugt.',[
       {label:'Ny runde',fn:()=>{hideOv();restartSame();}},
-      {label:'Indstillinger',fn:()=>{stopListening();hideOv();showScreen('s-setup');}}
+      {label:'Indstillinger',fn:()=>{stopListening();hideOv();showScreen('s-mode');}}
     ]);return;
   }
-  await gameRef.update({timers:newTimers,active:next});
+  if(gameMode==='local'){
+    gs.timers=newTimers;gs.active=next;syncLocalClock();
+  } else {
+    await gameRef.update({timers:newTimers,active:next});
+  }
 }
 
 // ── Tile click ────────────────────────────────────────────
@@ -443,10 +526,13 @@ async function onTileClick(i){
   if(gs.paused){toast('Spillet er sat på pause');return;}
   if(gs.active===i){
     const next=nextAlive(i);if(next<0)return;
-    await gameRef.update({timers:localTimers,active:next});return;
+    if(gameMode==='local'){ gs.active=next;gs.timers=[...localTimers];syncLocalClock(); }
+    else await gameRef.update({timers:localTimers,active:next});
+    return;
   }
   if(localTimers[i]<=0)return;
-  await gameRef.update({timers:localTimers,active:i});
+  if(gameMode==='local'){ gs.active=i;gs.timers=[...localTimers];syncLocalClock(); }
+  else await gameRef.update({timers:localTimers,active:i});
 }
 function nextAlive(from){
   let next=(from+1)%gs.cnt,tries=0;
@@ -458,24 +544,42 @@ function nextAlive(from){
 async function doPause(){
   if(!gs||gs.phase!=='playing')return;
   const newPaused=!gs.paused;
-  const updates={paused:newPaused};
-  if(!newPaused)updates.timers=localTimers;
-  await gameRef.update(updates);
+  if(gameMode==='local'){
+    gs.paused=newPaused;
+    if(!newPaused) gs.timers=[...localTimers];
+    syncLocalClock();
+  } else {
+    const updates={paused:newPaused};
+    if(!newPaused)updates.timers=localTimers;
+    await gameRef.update(updates);
+  }
+}
+
+// ── Local sync (mirrors renderClock for local mode) ────────
+function syncLocalClock(){
+  renderClock(gs);
 }
 
 // ── Reset ──────────────────────────────────────────────────
 function showResetOverlay(){
   showOv('Nyt spil?','',[
     {label:'Genstart med samme indstillinger',fn:()=>{hideOv();restartSame();}},
-    {label:'Nye indstillinger',fn:()=>{stopListening();hideOv();showScreen('s-setup');}},
+    {label:'Nye indstillinger',fn:()=>{stopListening();hideOv();showScreen('s-mode');}},
   ]);
 }
 async function restartSame(){
-  if(!gs||!gameRef)return;
+  if(!gs)return;
   const newTimers=Array(gs.cnt).fill(gs.secs);
   prevActive=-2;
-  await gameRef.update({timers:newTimers,active:-1,paused:false,phase:'playing'});
-  buildTiles({...gs,timers:newTimers});
+  if(gameMode==='local'){
+    gs.timers=newTimers;gs.active=-1;gs.paused=false;gs.phase='playing';
+    localTimers=[...newTimers];
+    buildTiles(gs);syncLocalClock();
+  } else {
+    if(!gameRef)return;
+    await gameRef.update({timers:newTimers,active:-1,paused:false,phase:'playing'});
+    buildTiles({...gs,timers:newTimers});
+  }
 }
 
 // ── Overlay ────────────────────────────────────────────────
