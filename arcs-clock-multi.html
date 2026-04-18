@@ -587,11 +587,12 @@ async function doPause(){
   const newPaused=!gs.paused;
   if(gameMode==='local'){
     gs.paused=newPaused;
-    if(!newPaused) gs.timers=[...localTimers];
+    gs.timers=[...localTimers];
+    if(newPaused) gs.active=-1; // frigiv aktiv spiller ved pause
     syncLocalClock();
   } else {
-    const updates={paused:newPaused};
-    if(!newPaused)updates.timers=localTimers;
+    const updates={paused:newPaused, timers:localTimers};
+    if(newPaused) updates.active=-1; // frigiv aktiv spiller ved pause
     await gameRef.update(updates);
   }
 }
